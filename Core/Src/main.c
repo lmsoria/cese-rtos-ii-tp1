@@ -17,12 +17,13 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <cmsis_os.h>
-#include <main.h>
+#include "main.h"
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "HAL_led.h"
+#include "app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -66,6 +67,17 @@ void StartDefaultTask(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+/// Redirect printf() output to SWV console. NOTE: This function is not reentrant :(
+int _write(int file, char* ptr, int len)
+{
+	int i = 0;
+	for(i = 0; i < len; i++) {
+		ITM_SendChar((*ptr++));
+	}
+	return len;
+
+}
 
 /* USER CODE END 0 */
 
@@ -127,6 +139,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  app_init();
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
