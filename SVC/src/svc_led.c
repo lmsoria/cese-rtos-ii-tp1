@@ -1,10 +1,10 @@
 // ------ inclusions ---------------------------------------------------
 #include <stdio.h>
-#include <SVC_led.h>
 #include "cmsis_os.h"
 
 #include "app_resources.h"
 
+#include "SVC_led.h"
 
 /// | Private typedef -----------------------------------------------------------
 /// | Private define ------------------------------------------------------------
