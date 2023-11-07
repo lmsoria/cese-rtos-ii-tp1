@@ -24,6 +24,13 @@ typedef struct
     uint32_t timer_up;
 } Debouncer;
 
+typedef enum {
+    EVENT_INITIAL,
+    EVENT_SHORT,
+    EVENT_LONG,
+    EVENT_BLOCKED
+} ButtonEvent;
+
 /// | Private define ------------------------------------------------------------
 
 #define DEBOUNCE_PERIOD_MS 40
@@ -31,6 +38,7 @@ typedef struct
 /// | Private macro -------------------------------------------------------------
 /// | Private variables ---------------------------------------------------------
 /// | Private function prototypes -----------------------------------------------
+static void process_button_timer_up(const uint32_t timer_up);
 
 /// | Private functions ---------------------------------------------------------
 void task_button(void* parameters)
@@ -87,10 +95,46 @@ void task_button(void* parameters)
 
 		if(debouncer.state == DEBOUNCER_STATE_WAIT_RELEASE) {
 			debouncer.timer_up++;
+			process_button_timer_up(debouncer.timer_up);
 		} else {
 			debouncer.timer_up = 0;
 		}
 
 		vTaskDelay(pdMS_TO_TICKS(1));
+	}
+}
+
+
+static void process_button_timer_up(const uint32_t timer_up)
+{
+	static ButtonEvent current_event = EVENT_INITIAL;
+	ButtonEvent new_event;
+
+	if(timer_up >= 100 && timer_up < 2000) {
+		new_event = EVENT_SHORT;
+	} else if(timer_up >= 2000 && timer_up < 8000) {
+		new_event = EVENT_LONG;
+	} else if(timer_up >= 8000) {
+		new_event = EVENT_BLOCKED;
+	} else {
+		new_event = EVENT_INITIAL;
+	}
+
+	if(new_event != current_event) {
+		current_event = new_event;
+
+		switch(current_event) {
+		case EVENT_SHORT:
+			printf("SHORT\r\n");
+			break;
+		case EVENT_LONG:
+			printf("LONG\r\n");
+			break;
+		case EVENT_BLOCKED:
+			printf("BLOCKED\r\n");
+			break;
+		default:
+			break;
+		}
 	}
 }
