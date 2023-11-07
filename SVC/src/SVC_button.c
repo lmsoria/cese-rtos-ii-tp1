@@ -91,6 +91,7 @@ void task_button(void* parameters)
 				debouncer.timer_debounce--;
 			} else {
 				debouncer.state = DEBOUNCER_STATE_WAIT_PRESS;
+				printf("Button Released\n");
 			}
 			break;
 		default:
@@ -129,13 +130,13 @@ static void process_button_timer_up(const uint32_t timer_up)
 
 		switch(current_event) {
 		case EVENT_SHORT:
-			printf("SHORT\r\n");
+			printf("SHORT\n");
 			break;
 		case EVENT_LONG:
-			printf("LONG\r\n");
+			printf("LONG\n");
 			break;
 		case EVENT_BLOCKED:
-			printf("BLOCKED\r\n");
+			printf("BLOCKED\n");
 			break;
 		default:
 			break;
