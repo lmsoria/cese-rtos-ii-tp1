@@ -15,5 +15,6 @@
 /// | Private functions ---------------------------------------------------------
 void task_button(void* parameters)
 {
+	printf("[%s] Task Created\n", pcTaskGetName(NULL));
 	while(1) {}
 }
