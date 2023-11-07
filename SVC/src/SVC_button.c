@@ -29,8 +29,8 @@ typedef struct
 /// @brief Events to be detected by the button task
 typedef enum {
     EVENT_INITIAL, ///< Initial state.
-    EVENT_SHORT,   ///< Detected when the buton is being pressed in the range [EVENT_SHORT_THRESHOLD_MIN_MS, EVENT_LONG_THRESHOLD_MIN_MS)
-    EVENT_LONG,    ///< Detected when the buton is being pressed in the range [EVENT_LONG_THRESHOLD_MIN_MS, EVENT_BLOCKED_THRESHOLD_MIN_MS)
+    EVENT_SHORT,   ///< Detected when the button is being pressed in the range [EVENT_SHORT_THRESHOLD_MIN_MS, EVENT_LONG_THRESHOLD_MIN_MS)
+    EVENT_LONG,    ///< Detected when the button is being pressed in the range [EVENT_LONG_THRESHOLD_MIN_MS, EVENT_BLOCKED_THRESHOLD_MIN_MS)
     EVENT_BLOCKED  ///< Detected when the button is being pressed in the range >= EVENT_BLOCKED_THRESHOLD_MIN_MS
 } ButtonEvent;
 
@@ -108,7 +108,6 @@ void task_button(void* parameters)
 		vTaskDelay(pdMS_TO_TICKS(1));
 	}
 }
-
 
 static void process_button_timer_up(const uint32_t timer_up)
 {
