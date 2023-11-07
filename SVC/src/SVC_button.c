@@ -16,24 +16,30 @@ typedef enum
 	DEBOUNCER_STATE_DEBOUNCE_INACTIVE, ///< The key has been released, so we need to filter the debouncing
 } DebouncerState;
 
+
+/// @brief Struct that applies an debouncing mechanism to an specific button.
 typedef struct
 {
-	BoardButtons button;
-	DebouncerState state;
-    uint32_t timer_debounce;
-    uint32_t timer_up;
+	BoardButtons button;     ///< Button instance associated to the Debouncer
+	DebouncerState state;    ///< Current debouncer state
+    uint32_t timer_debounce; ///< Counter used for measuring debouncing transients
+    uint32_t timer_up;       ///< Counter used for measuring pressed time.
 } Debouncer;
 
+/// @brief Events to be detected by the button task
 typedef enum {
-    EVENT_INITIAL,
-    EVENT_SHORT,
-    EVENT_LONG,
-    EVENT_BLOCKED
+    EVENT_INITIAL, ///< Initial state.
+    EVENT_SHORT,   ///< Detected when the buton is being pressed in the range [EVENT_SHORT_THRESHOLD_MIN_MS, EVENT_LONG_THRESHOLD_MIN_MS)
+    EVENT_LONG,    ///< Detected when the buton is being pressed in the range [EVENT_LONG_THRESHOLD_MIN_MS, EVENT_BLOCKED_THRESHOLD_MIN_MS)
+    EVENT_BLOCKED  ///< Detected when the button is being pressed in the range >= EVENT_BLOCKED_THRESHOLD_MIN_MS
 } ButtonEvent;
 
 /// | Private define ------------------------------------------------------------
 
 #define DEBOUNCE_PERIOD_MS 40
+#define EVENT_SHORT_THRESHOLD_MIN_MS 100
+#define EVENT_LONG_THRESHOLD_MIN_MS 2000
+#define EVENT_BLOCKED_THRESHOLD_MIN_MS 8000
 
 /// | Private macro -------------------------------------------------------------
 /// | Private variables ---------------------------------------------------------
@@ -52,7 +58,6 @@ void task_button(void* parameters)
 		.timer_debounce = 0,
 		.timer_up = 0,
 	};
-
 
 	printf("[%s] Task Created\n", pcTaskGetName(NULL));
 	while(1) {
@@ -110,11 +115,11 @@ static void process_button_timer_up(const uint32_t timer_up)
 	static ButtonEvent current_event = EVENT_INITIAL;
 	ButtonEvent new_event;
 
-	if(timer_up >= 100 && timer_up < 2000) {
+	if(timer_up >= EVENT_SHORT_THRESHOLD_MIN_MS && timer_up < EVENT_LONG_THRESHOLD_MIN_MS) {
 		new_event = EVENT_SHORT;
-	} else if(timer_up >= 2000 && timer_up < 8000) {
+	} else if(timer_up >= EVENT_LONG_THRESHOLD_MIN_MS && timer_up < EVENT_BLOCKED_THRESHOLD_MIN_MS) {
 		new_event = EVENT_LONG;
-	} else if(timer_up >= 8000) {
+	} else if(timer_up >= EVENT_BLOCKED_THRESHOLD_MIN_MS) {
 		new_event = EVENT_BLOCKED;
 	} else {
 		new_event = EVENT_INITIAL;
