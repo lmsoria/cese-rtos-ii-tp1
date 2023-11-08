@@ -27,14 +27,6 @@ typedef struct
     uint32_t timer_up;       ///< Counter used for measuring pressed time.
 } Debouncer;
 
-/// @brief Events to be detected by the button task
-typedef enum {
-    EVENT_INITIAL, ///< Initial state.
-    EVENT_SHORT,   ///< Detected when the button is being pressed in the range [EVENT_SHORT_THRESHOLD_MIN_MS, EVENT_LONG_THRESHOLD_MIN_MS)
-    EVENT_LONG,    ///< Detected when the button is being pressed in the range [EVENT_LONG_THRESHOLD_MIN_MS, EVENT_BLOCKED_THRESHOLD_MIN_MS)
-    EVENT_BLOCKED  ///< Detected when the button is being pressed in the range >= EVENT_BLOCKED_THRESHOLD_MIN_MS
-} ButtonEvent;
-
 /// | Private define ------------------------------------------------------------
 
 #define DEBOUNCE_PERIOD_MS 40
@@ -46,7 +38,8 @@ typedef enum {
 /// | Private variables ---------------------------------------------------------
 extern LEDActiveObject led_ao_green;
 /// | Private function prototypes -----------------------------------------------
-static void process_button_timer_up(const uint32_t timer_up);
+static void process_button_timer_up(ButtonEvent* const current_event, const uint32_t timer_up);
+static void process_button_release(ButtonEvent* const current_event);
 
 /// | Private functions ---------------------------------------------------------
 void task_button(void* parameters)
@@ -60,6 +53,8 @@ void task_button(void* parameters)
 		.timer_debounce = 0,
 		.timer_up = 0,
 	};
+
+	ButtonEvent current_event = EVENT_INITIAL;
 
 	printf("[%s] Task Created\n", pcTaskGetName(NULL));
 	while(1) {
@@ -93,7 +88,7 @@ void task_button(void* parameters)
 				debouncer.timer_debounce--;
 			} else {
 				debouncer.state = DEBOUNCER_STATE_WAIT_PRESS;
-				printf("Button Released\n");
+				process_button_release(&current_event);
 			}
 			break;
 		default:
@@ -102,8 +97,7 @@ void task_button(void* parameters)
 		}
 
 		if(debouncer.state == DEBOUNCER_STATE_WAIT_RELEASE) {
-			debouncer.timer_up++;
-			process_button_timer_up(debouncer.timer_up);
+			process_button_timer_up(&current_event, ++debouncer.timer_up);
 		} else {
 			debouncer.timer_up = 0;
 		}
@@ -112,9 +106,8 @@ void task_button(void* parameters)
 	}
 }
 
-static void process_button_timer_up(const uint32_t timer_up)
+static void process_button_timer_up(ButtonEvent* const current_event, const uint32_t timer_up)
 {
-	static ButtonEvent current_event = EVENT_INITIAL;
 	ButtonEvent new_event;
 
 	if(timer_up >= EVENT_SHORT_THRESHOLD_MIN_MS && timer_up < EVENT_LONG_THRESHOLD_MIN_MS) {
@@ -127,11 +120,11 @@ static void process_button_timer_up(const uint32_t timer_up)
 		new_event = EVENT_INITIAL;
 	}
 
-	if(new_event != current_event) {
-		current_event = new_event;
+	if(new_event != *current_event) {
+		*current_event = new_event;
 		LEDEvent event_to_be_sent;
 
-		switch(current_event) {
+		switch(*current_event) {
 		case EVENT_SHORT:
 			printf("SHORT\n");
 			event_to_be_sent.type = LED_EVENT_TOGGLE;
@@ -156,4 +149,27 @@ static void process_button_timer_up(const uint32_t timer_up)
 			break;
 		}
 	}
+}
+
+static void process_button_release(ButtonEvent* const current_event)
+{
+    LEDEvent event_to_be_sent;
+
+    printf("Button Released\n");
+
+    switch(*current_event) {
+    case EVENT_SHORT:
+        break;
+    case EVENT_LONG:
+        break;
+    case EVENT_BLOCKED:
+        event_to_be_sent.type = LED_EVENT_OFF;
+        event_to_be_sent.led = LED_RED;
+        led_ao_send_event(&led_ao_green, &event_to_be_sent);
+        event_to_be_sent.led = LED_GREEN;
+        led_ao_send_event(&led_ao_green, &event_to_be_sent);
+        break;
+    default:
+        break;
+    }
 }
