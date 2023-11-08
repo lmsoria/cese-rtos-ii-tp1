@@ -19,7 +19,7 @@ typedef struct
 /// | Exported data -------------------------------------------------------------
 
 extern TaskHandle_t button_task_handle;
-extern LEDActiveObject led_ao_green;
+extern LEDActiveObject ao_led;
 
 /// | Exported constants --------------------------------------------------------
 /// | Exported macro ------------------------------------------------------------

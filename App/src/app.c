@@ -27,7 +27,7 @@ static const ButtonTaskData BUTTON_TASK_DATA_ARRAY[1] =
 
 /// | Exported variables --------------------------------------------------------
 TaskHandle_t button_task_handle;
-LEDActiveObject led_ao_green;
+LEDActiveObject ao_led;
 
 /// | Private functions ---------------------------------------------------------
 
@@ -37,7 +37,7 @@ void app_init()
 
     printf("Main application starts here\n");
 
-    led_initialize_ao(&led_ao_green, "ao_led_green");
+    led_initialize_ao(&ao_led, "ao_led");
 
     // Create button task
     ret = xTaskCreate(

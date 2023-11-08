@@ -38,7 +38,7 @@ typedef struct
 /// | Private macro -------------------------------------------------------------
 
 /// | Private variables ---------------------------------------------------------
-extern LEDActiveObject led_ao_green;
+extern LEDActiveObject ao_led;
 
 /// | Private function prototypes -----------------------------------------------
 
@@ -144,20 +144,20 @@ static void process_button_pressed_state(ButtonEvent* const current_event, const
 			printf("SHORT\n");
 			event_to_be_sent.type = LED_EVENT_TOGGLE;
 			event_to_be_sent.led = LED_GREEN;
-			led_ao_send_event(&led_ao_green, &event_to_be_sent);
+			led_ao_send_event(&ao_led, &event_to_be_sent);
 			break;
 		case EVENT_LONG:
             event_to_be_sent.type = LED_EVENT_TOGGLE;
             event_to_be_sent.led = LED_RED;
-            led_ao_send_event(&led_ao_green, &event_to_be_sent);
+            led_ao_send_event(&ao_led, &event_to_be_sent);
 			printf("LONG\n");
 			break;
 		case EVENT_BLOCKED:
             event_to_be_sent.type = LED_EVENT_ON;
             event_to_be_sent.led = LED_RED;
-            led_ao_send_event(&led_ao_green, &event_to_be_sent);
+            led_ao_send_event(&ao_led, &event_to_be_sent);
             event_to_be_sent.led = LED_GREEN;
-            led_ao_send_event(&led_ao_green, &event_to_be_sent);
+            led_ao_send_event(&ao_led, &event_to_be_sent);
 			printf("BLOCKED\n");
 			break;
 		default:
@@ -181,9 +181,9 @@ static void process_button_released_state(ButtonEvent* const current_event)
 		// As per design, only turn off the LEDs when the current state is BLOCKED
         event_to_be_sent.type = LED_EVENT_OFF;
         event_to_be_sent.led = LED_RED;
-        led_ao_send_event(&led_ao_green, &event_to_be_sent);
+        led_ao_send_event(&ao_led, &event_to_be_sent);
         event_to_be_sent.led = LED_GREEN;
-        led_ao_send_event(&led_ao_green, &event_to_be_sent);
+        led_ao_send_event(&ao_led, &event_to_be_sent);
         break;
     default:
         break;
