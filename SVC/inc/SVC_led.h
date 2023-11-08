@@ -12,9 +12,15 @@ typedef enum
     LED_EVENT_TOGGLE,
 } LEDEventType;
 
+typedef enum
+{
+    LED_GREEN = LED1,
+    LED_RED = LED3,
+} ApplicationLEDs;
+
 typedef struct
 {
-    BoardLEDs led;
+    ApplicationLEDs led;
     LEDEventType type;
 } LEDEvent;
 
