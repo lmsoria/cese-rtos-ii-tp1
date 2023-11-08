@@ -55,7 +55,7 @@ void led_initialize_ao(LEDActiveObject* ao, const char* ao_task_name)
 
 static void execute_event(LEDEvent event)
 {
-    switch (event) {
+    switch (event.type) {
         case LED_EVENT_ON:
             printf("LED_EVENT_ON\n");
             led_set(LED1);

@@ -3,11 +3,19 @@
 #include "FreeRTOS.h"
 #include "queue.h"
 
+#include "HAL_led.h"
+
 typedef enum
 {
     LED_EVENT_ON,
     LED_EVENT_OFF,
     LED_EVENT_TOGGLE,
+} LEDEventType;
+
+typedef struct
+{
+    BoardLEDs led;
+    LEDEventType type;
 } LEDEvent;
 
 typedef struct

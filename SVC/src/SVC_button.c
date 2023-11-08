@@ -134,7 +134,8 @@ static void process_button_timer_up(const uint32_t timer_up)
 		switch(current_event) {
 		case EVENT_SHORT:
 			printf("SHORT\n");
-			event_to_be_sent = LED_EVENT_TOGGLE;
+			event_to_be_sent.type = LED_EVENT_TOGGLE;
+			event_to_be_sent.led = LED1;
 			led_ao_send_event(&led_ao_green, &event_to_be_sent);
 			break;
 		case EVENT_LONG:
