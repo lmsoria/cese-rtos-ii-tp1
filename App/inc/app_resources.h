@@ -13,7 +13,7 @@
 /// @brief Struct that represents the data consumed by the button service
 typedef struct
 {
-	BoardButtons button;
+    BoardButtons button;
 } ButtonTaskData;
 
 /// | Exported data -------------------------------------------------------------

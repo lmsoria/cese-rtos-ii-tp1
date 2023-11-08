@@ -7,9 +7,9 @@
 
 typedef enum
 {
-    LED_EVENT_ON,
-    LED_EVENT_OFF,
-    LED_EVENT_TOGGLE,
+    LED_EVENT_ON,     ///< Turn on a LED
+    LED_EVENT_OFF,    ///< Turn off a LED
+    LED_EVENT_TOGGLE, ///< Toggle a LED
 } LEDEventType;
 
 typedef enum
