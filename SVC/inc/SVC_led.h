@@ -17,4 +17,6 @@ typedef struct
 
 void led_initialize_ao(LEDActiveObject* ao, const char* ao_task_name);
 
+void led_ao_send_event(LEDActiveObject* ao, LEDEvent* const event);
+
 void task_led(void* parameters);

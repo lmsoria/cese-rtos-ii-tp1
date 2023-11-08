@@ -73,3 +73,16 @@ static void execute_event(LEDEvent event)
             break;
     }
 }
+
+void led_ao_send_event(LEDActiveObject* ao, LEDEvent* const event)
+{
+    BaseType_t ret;
+
+    ret = xQueueSend(ao->queue, (void*)(event), portMAX_DELAY);
+    if(ret == pdPASS) {
+        printf("LED event sent!\n");
+    } else {
+        printf("Error sending LED event\n");
+    }
+}
+
