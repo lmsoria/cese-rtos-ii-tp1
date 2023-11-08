@@ -14,7 +14,7 @@
 /// | Private function prototypes -----------------------------------------------
 
 /// | Private variables ---------------------------------------------------------
-static LEDActiveObject led_ao_green;
+
 /// | Exported variables -------------------------------------------------------
 
 // Data passed to future tasks. TODO: List available tasks inside an enum so we don't hardcode the indices
@@ -27,6 +27,7 @@ static const ButtonTaskData BUTTON_TASK_DATA_ARRAY[1] =
 
 /// | Exported variables --------------------------------------------------------
 TaskHandle_t button_task_handle;
+LEDActiveObject led_ao_green;
 
 /// | Private functions ---------------------------------------------------------
 

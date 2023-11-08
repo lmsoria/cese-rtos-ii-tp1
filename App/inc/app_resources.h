@@ -6,6 +6,7 @@
 #include <task.h>
 
 #include "HAL_button.h"
+#include "SVC_led.h"
 
 /// | Exported types ------------------------------------------------------------
 
@@ -15,10 +16,10 @@ typedef struct
 	BoardButtons button;
 } ButtonTaskData;
 
-
 /// | Exported data -------------------------------------------------------------
 
 extern TaskHandle_t button_task_handle;
+extern LEDActiveObject led_ao_green;
 
 /// | Exported constants --------------------------------------------------------
 /// | Exported macro ------------------------------------------------------------

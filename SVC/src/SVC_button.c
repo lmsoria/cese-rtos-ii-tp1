@@ -43,6 +43,7 @@ typedef enum {
 
 /// | Private macro -------------------------------------------------------------
 /// | Private variables ---------------------------------------------------------
+extern LEDActiveObject led_ao_green;
 /// | Private function prototypes -----------------------------------------------
 static void process_button_timer_up(const uint32_t timer_up);
 
@@ -127,10 +128,13 @@ static void process_button_timer_up(const uint32_t timer_up)
 
 	if(new_event != current_event) {
 		current_event = new_event;
+		LEDEvent event_to_be_sent;
 
 		switch(current_event) {
 		case EVENT_SHORT:
 			printf("SHORT\n");
+			event_to_be_sent = LED_EVENT_TOGGLE;
+			led_ao_send_event(&led_ao_green, &event_to_be_sent);
 			break;
 		case EVENT_LONG:
 			printf("LONG\n");

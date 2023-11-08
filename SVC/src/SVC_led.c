@@ -28,7 +28,7 @@ void task_led(void* parameters)
 
 	while(1) {
 	    if(xQueueReceive(AO->queue, &event, portMAX_DELAY) == pdPASS) {
-	        printf("[%s] Event Received!\n", pcTaskGetName(NULL));
+	        printf("[%s] Event Received: ", pcTaskGetName(NULL));
 	        execute_event(event);
 	    }
 	}
