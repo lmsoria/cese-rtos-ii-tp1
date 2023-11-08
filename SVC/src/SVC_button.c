@@ -5,6 +5,7 @@
 #include "app_resources.h"
 
 #include "SVC_button.h"
+#include "SVC_led.h"
 
 /// | Private typedef -----------------------------------------------------------
 
