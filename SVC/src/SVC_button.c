@@ -9,6 +9,7 @@
 
 /// | Private typedef -----------------------------------------------------------
 
+/// @brief Debouncer FSM States
 typedef enum
 {
 	DEBOUNCER_STATE_WAIT_PRESS = 0,    ///< Key released, waiting to be pressed
@@ -35,11 +36,22 @@ typedef struct
 #define EVENT_BLOCKED_THRESHOLD_MIN_MS 8000
 
 /// | Private macro -------------------------------------------------------------
+
 /// | Private variables ---------------------------------------------------------
 extern LEDActiveObject led_ao_green;
+
 /// | Private function prototypes -----------------------------------------------
-static void process_button_timer_up(ButtonEvent* const current_event, const uint32_t timer_up);
-static void process_button_release(ButtonEvent* const current_event);
+
+/// @brief Process the "button pressed" action, which happens whenever the Debouncer is at DEBOUNCER_STATE_WAIT_RELEASE state.
+///        Use this function to propagate events to other actors.
+/// @param current_event current ButtonEvent. The function will modify its content (iif it's different from the previous one).
+/// @param timer_up time that the button has been pressed, in ms
+static void process_button_pressed_state(ButtonEvent* const current_event, const uint32_t timer_up);
+
+/// @brief Process the "button released" action, which happens whenever the Debouncer is at DEBOUNCER_STATE_DEBOUNCE_INACTIVE state.
+///        Use this function to propagate events to other actors.
+/// @param current_event current ButtonEvent. The function won't modify its content.
+static void process_button_released_state(ButtonEvent* const current_event);
 
 /// | Private functions ---------------------------------------------------------
 void task_button(void* parameters)
@@ -57,6 +69,7 @@ void task_button(void* parameters)
 	ButtonEvent current_event = EVENT_INITIAL;
 
 	printf("[%s] Task Created\n", pcTaskGetName(NULL));
+
 	while(1) {
 		switch(debouncer.state) {
 		case DEBOUNCER_STATE_WAIT_PRESS:
@@ -88,7 +101,7 @@ void task_button(void* parameters)
 				debouncer.timer_debounce--;
 			} else {
 				debouncer.state = DEBOUNCER_STATE_WAIT_PRESS;
-				process_button_release(&current_event);
+				process_button_released_state(&current_event);
 			}
 			break;
 		default:
@@ -97,7 +110,7 @@ void task_button(void* parameters)
 		}
 
 		if(debouncer.state == DEBOUNCER_STATE_WAIT_RELEASE) {
-			process_button_timer_up(&current_event, ++debouncer.timer_up);
+		    process_button_pressed_state(&current_event, ++debouncer.timer_up);
 		} else {
 			debouncer.timer_up = 0;
 		}
@@ -106,7 +119,7 @@ void task_button(void* parameters)
 	}
 }
 
-static void process_button_timer_up(ButtonEvent* const current_event, const uint32_t timer_up)
+static void process_button_pressed_state(ButtonEvent* const current_event, const uint32_t timer_up)
 {
 	ButtonEvent new_event;
 
@@ -120,6 +133,8 @@ static void process_button_timer_up(ButtonEvent* const current_event, const uint
 		new_event = EVENT_INITIAL;
 	}
 
+	// Since this function is being called periodically, we need to keep track of the new event and only send events
+	// when there is a difference with the previous one.
 	if(new_event != *current_event) {
 		*current_event = new_event;
 		LEDEvent event_to_be_sent;
@@ -151,7 +166,7 @@ static void process_button_timer_up(ButtonEvent* const current_event, const uint
 	}
 }
 
-static void process_button_release(ButtonEvent* const current_event)
+static void process_button_released_state(ButtonEvent* const current_event)
 {
     LEDEvent event_to_be_sent;
 
@@ -163,6 +178,7 @@ static void process_button_release(ButtonEvent* const current_event)
     case EVENT_LONG:
         break;
     case EVENT_BLOCKED:
+		// As per design, only turn off the LEDs when the current state is BLOCKED
         event_to_be_sent.type = LED_EVENT_OFF;
         event_to_be_sent.led = LED_RED;
         led_ao_send_event(&led_ao_green, &event_to_be_sent);
