@@ -139,6 +139,9 @@ static void process_button_timer_up(const uint32_t timer_up)
 			led_ao_send_event(&led_ao_green, &event_to_be_sent);
 			break;
 		case EVENT_LONG:
+            event_to_be_sent.type = LED_EVENT_TOGGLE;
+            event_to_be_sent.led = LED3;
+            led_ao_send_event(&led_ao_green, &event_to_be_sent);
 			printf("LONG\n");
 			break;
 		case EVENT_BLOCKED:

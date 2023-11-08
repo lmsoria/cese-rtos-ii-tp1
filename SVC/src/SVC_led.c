@@ -55,18 +55,19 @@ void led_initialize_ao(LEDActiveObject* ao, const char* ao_task_name)
 
 static void execute_event(LEDEvent event)
 {
+    const BoardLEDs LED = event.led;
     switch (event.type) {
         case LED_EVENT_ON:
             printf("LED_EVENT_ON\n");
-            led_set(LED1);
+            led_set(LED);
             break;
         case LED_EVENT_OFF:
             printf("LED_EVENT_OFF\n");
-            led_clear(LED1);
+            led_clear(LED);
             break;
         case LED_EVENT_TOGGLE:
             printf("LED_EVENT_TOGGLE\n");
-            led_toggle(LED1);
+            led_toggle(LED);
             break;
         default:
             configASSERT(pdFAIL && "Invalid LED event");
