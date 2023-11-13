@@ -56,13 +56,23 @@ void task_button(void* parameters)
 {
     ButtonTaskData* const DATA = (ButtonTaskData*) (parameters);
 
-    Debouncer debouncer = { .button = DATA->button, .state = DEBOUNCER_STATE_WAIT_PRESS,
-            .timer_debounce = 0, .timer_up = 0, };
+    Debouncer debouncer =
+    {
+        .button = DATA->button,
+        .state = DEBOUNCER_STATE_WAIT_PRESS,
+        .timer_debounce = 0,
+        .timer_up = 0,
+    };
 
     ButtonEvent current_event = EVENT_INITIAL;
 
     printf("[%s] Task Created\n", pcTaskGetName(NULL));
 
+    // Basic flow:
+    // 1. Read button
+    // 2. Debounce its state by using a Debouncer FSM
+    // 3. If button is pressed, call process_button_pressed_state()
+    // 4. If button released, call process_button_released_state()
     while (1) {
         switch (debouncer.state) {
         case DEBOUNCER_STATE_WAIT_PRESS:
@@ -116,6 +126,8 @@ static void process_button_pressed_state(ButtonEvent* const current_event, const
 {
     ButtonEvent new_event;
 
+    const char* BUTTON_TASK_NAME = pcTaskGetName(NULL);
+
     if (timer_up >= EVENT_SHORT_THRESHOLD_MIN_MS && timer_up < EVENT_LONG_THRESHOLD_MIN_MS) {
         new_event = EVENT_SHORT;
     } else if (timer_up >= EVENT_LONG_THRESHOLD_MIN_MS && timer_up < EVENT_BLOCKED_THRESHOLD_MIN_MS) {
@@ -134,24 +146,26 @@ static void process_button_pressed_state(ButtonEvent* const current_event, const
 
         switch (*current_event) {
         case EVENT_SHORT:
-            printf("SHORT\n");
+            printf("[%s] Detected SHORT press\n", BUTTON_TASK_NAME);
             event_to_be_sent.type = LED_EVENT_TOGGLE;
             event_to_be_sent.led = LED_GREEN;
             led_ao_send_event(&ao_led, &event_to_be_sent);
             break;
         case EVENT_LONG:
+            printf("[%s] Detected LONG press\n", BUTTON_TASK_NAME);
             event_to_be_sent.type = LED_EVENT_TOGGLE;
             event_to_be_sent.led = LED_RED;
             led_ao_send_event(&ao_led, &event_to_be_sent);
-            printf("LONG\n");
+
             break;
         case EVENT_BLOCKED:
+            printf("[%s] Detected BLOCKED press\n", BUTTON_TASK_NAME);
             event_to_be_sent.type = LED_EVENT_ON;
             event_to_be_sent.led = LED_RED;
             led_ao_send_event(&ao_led, &event_to_be_sent);
             event_to_be_sent.led = LED_GREEN;
             led_ao_send_event(&ao_led, &event_to_be_sent);
-            printf("BLOCKED\n");
+
             break;
         default:
             break;
@@ -163,7 +177,7 @@ static void process_button_released_state(ButtonEvent* const current_event)
 {
     LEDEvent event_to_be_sent;
 
-    printf("Button Released\n");
+    printf("[%s] Button Released\n", pcTaskGetName(NULL));
 
     switch (*current_event) {
     case EVENT_SHORT:
