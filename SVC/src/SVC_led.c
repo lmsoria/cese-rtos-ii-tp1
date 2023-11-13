@@ -10,12 +10,21 @@
 /// | Private define ------------------------------------------------------------
 
 #define LED_AO_QUEUE_LENGTH 16
+
 /// | Private macro -------------------------------------------------------------
 /// | Private variables ---------------------------------------------------------
 /// | Private function prototypes -----------------------------------------------
-static void execute_event(LEDEvent event);
+
+/// @brief Process events received on the AO queue
+/// @param event
+static void execute_event(const LEDEvent event);
+
+/// @brief LED Active object task.
+/// @param parameters should be a reference to the AO.
+static void ao_led_task(void* parameters);
+
 /// | Private functions ---------------------------------------------------------
-void task_led(void* parameters)
+static void ao_led_task(void* parameters)
 {
     LEDActiveObject* const AO = (LEDActiveObject*) (parameters);
 
@@ -34,7 +43,7 @@ void led_initialize_ao(LEDActiveObject* ao, const char* ao_task_name)
     BaseType_t ret;
 
     ret = xTaskCreate(
-            task_led,
+            ao_led_task,
             ao_task_name,
             (2 * configMINIMAL_STACK_SIZE),
             (void*) ao,
@@ -46,7 +55,7 @@ void led_initialize_ao(LEDActiveObject* ao, const char* ao_task_name)
     configASSERT(ao->queue);
 }
 
-static void execute_event(LEDEvent event)
+static void execute_event(const LEDEvent event)
 {
     printf("[%s] Event Received: ", pcTaskGetName(NULL));
     const BoardLEDs LED = event.led;
@@ -73,13 +82,7 @@ static void execute_event(LEDEvent event)
 
 void led_ao_send_event(LEDActiveObject* ao, LEDEvent* const event)
 {
-    BaseType_t ret;
-
-    ret = xQueueSend(ao->queue, (void* )(event), portMAX_DELAY);
-    if (ret == pdPASS) {
-        printf("LED event sent!\n");
-    } else {
+    if (xQueueSend(ao->queue, (void*)(event), portMAX_DELAY) != pdPASS) {
         printf("Error sending LED event\n");
     }
 }
-
