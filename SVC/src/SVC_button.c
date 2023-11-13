@@ -1,6 +1,5 @@
 // ------ inclusions ---------------------------------------------------
 #include <stdio.h>
-#include "cmsis_os.h"
 
 #include "app_resources.h"
 

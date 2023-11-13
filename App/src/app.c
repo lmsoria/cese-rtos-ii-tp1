@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-#include "cmsis_os.h"
-
 #include "app.h"
 #include "app_resources.h"
 
@@ -32,10 +30,16 @@ void app_init()
 
     printf("Main application starts here\n");
 
+    // Initialize LED Active Object
     led_initialize_ao(&ao_led, "ao_led");
 
     // Create button task
-    ret = xTaskCreate(task_button, "Task Button", (2 * configMINIMAL_STACK_SIZE),
-            (void*) &BUTTON_TASK_DATA_ARRAY[0], (tskIDLE_PRIORITY + 1UL), &button_task_handle);
+    ret = xTaskCreate(
+            task_button,
+            "Task Button",
+            (2 * configMINIMAL_STACK_SIZE),
+            (void*) &BUTTON_TASK_DATA_ARRAY[0],
+            (tskIDLE_PRIORITY + 1UL),
+            &button_task_handle);
     configASSERT(ret == pdPASS);
 }
