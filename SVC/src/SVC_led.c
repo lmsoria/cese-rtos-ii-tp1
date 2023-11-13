@@ -24,7 +24,6 @@ void task_led(void* parameters)
 
     while (1) {
         if (xQueueReceive(AO->queue, &event, portMAX_DELAY) == pdPASS) {
-            printf("[%s] Event Received: ", pcTaskGetName(NULL));
             execute_event(event);
         }
     }
@@ -34,9 +33,13 @@ void led_initialize_ao(LEDActiveObject* ao, const char* ao_task_name)
 {
     BaseType_t ret;
 
-    ret = xTaskCreate(task_led, ao_task_name, (2 * configMINIMAL_STACK_SIZE), (void*) ao,
+    ret = xTaskCreate(
+            task_led,
+            ao_task_name,
+            (2 * configMINIMAL_STACK_SIZE),
+            (void*) ao,
             (tskIDLE_PRIORITY + 1UL),
-            NULL);
+            ao->task);
     configASSERT(ret == pdPASS);
 
     ao->queue = xQueueCreate(LED_AO_QUEUE_LENGTH, sizeof(LEDEvent));
@@ -45,7 +48,9 @@ void led_initialize_ao(LEDActiveObject* ao, const char* ao_task_name)
 
 static void execute_event(LEDEvent event)
 {
+    printf("[%s] Event Received: ", pcTaskGetName(NULL));
     const BoardLEDs LED = event.led;
+
     switch (event.type) {
     case LED_EVENT_ON:
         printf("LED_EVENT_ON\n");

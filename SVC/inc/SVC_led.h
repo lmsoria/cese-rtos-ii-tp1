@@ -2,6 +2,7 @@
 
 #include "FreeRTOS.h"
 #include "queue.h"
+#include "task.h"
 
 #include "HAL_led.h"
 
@@ -27,6 +28,7 @@ typedef struct
 typedef struct
 {
     QueueHandle_t queue;
+    TaskHandle_t* task;
 } LEDActiveObject;
 
 void led_initialize_ao(LEDActiveObject* ao, const char* ao_task_name);
