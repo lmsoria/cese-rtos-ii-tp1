@@ -62,3 +62,13 @@ bool ao_initialize(ActiveObject* const ao, const char* task_name, dispatch_event
     printf("[AO] Active Object \"%s\" created!\n", task_name);
     return true;
 }
+
+bool ao_send_event(ActiveObject* ao, Event* const event)
+{
+    if (xQueueSend(ao->queue, (void*)(event), portMAX_DELAY) != pdPASS) {
+        printf("Error sending event to \"%s\" queue\n", pcTaskGetName(*ao->task));
+        return false;
+    }
+
+    return true;
+}

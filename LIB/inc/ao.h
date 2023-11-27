@@ -37,3 +37,9 @@ typedef struct
 } ActiveObject;
 
 bool ao_initialize(ActiveObject* const ao, const char* task_name, dispatch_event_handler_t handler);
+
+
+/// @brief Post an Event to the Active Object's queue.
+/// @param ao Receiver of the event
+/// @param event Event to be sent
+bool ao_send_event(ActiveObject* const ao, Event* const event);
