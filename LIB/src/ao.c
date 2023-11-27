@@ -11,7 +11,7 @@ static void ao_task(void* parameters)
 	ActiveObject* const AO = (ActiveObject*)(parameters);
 
     Event event;
-    printf("[%s] Task Created\n", pcTaskGetName(NULL));
+    printf("[%s] Task Running\n", pcTaskGetName(NULL));
 
     while (1) {
         if (xQueueReceive(AO->queue, &event, portMAX_DELAY) == pdPASS) {
