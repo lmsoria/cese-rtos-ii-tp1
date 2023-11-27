@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include "ao.h"
+
 #include "app.h"
 #include "app_resources.h"
 
@@ -23,7 +25,8 @@ static const ButtonTaskData BUTTON_TASK_DATA_ARRAY[1] =
 
 /// | Exported variables --------------------------------------------------------
 TaskHandle_t button_task_handle;
-LEDActiveObject ao_led;
+ActiveObject ao_led;
+
 
 /// | Private functions ---------------------------------------------------------
 
@@ -34,7 +37,10 @@ void app_init()
     printf("Main application starts here\n");
 
     // Initialize LED Active Object
-    led_initialize_ao(&ao_led, "ao_led");
+    if(!svc_led_initialize(&ao_led, "led")) {
+    	printf("Error: Couldn't initialize led AO\n");
+    	configASSERT(false);
+    }
 
     // Create button task
     ret = xTaskCreate(

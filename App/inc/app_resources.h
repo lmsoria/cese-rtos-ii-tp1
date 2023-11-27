@@ -5,8 +5,9 @@
 #include <FreeRTOS.h>
 #include <task.h>
 
+#include "ao.h"
+
 #include "HAL_button.h"
-#include "SVC_led.h"
 
 /// | Exported types ------------------------------------------------------------
 
@@ -19,7 +20,7 @@ typedef struct
 /// | Exported data -------------------------------------------------------------
 
 extern TaskHandle_t button_task_handle;
-extern LEDActiveObject ao_led;
+extern ActiveObject ao_led;
 
 /// | Exported constants --------------------------------------------------------
 /// | Exported macro ------------------------------------------------------------
