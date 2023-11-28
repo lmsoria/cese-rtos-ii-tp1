@@ -7,6 +7,7 @@
 
 #include "SVC_led.h"
 #include "SVC_button.h"
+#include "SVC_sys.h"
 
 /// | Private typedef -----------------------------------------------------------
 /// | Private define ------------------------------------------------------------
@@ -26,6 +27,7 @@ static const ButtonTaskData BUTTON_TASK_DATA_ARRAY[1] =
 /// | Exported variables --------------------------------------------------------
 TaskHandle_t button_task_handle;
 ActiveObject ao_led;
+ActiveObject ao_sys;
 
 
 /// | Private functions ---------------------------------------------------------
@@ -42,6 +44,11 @@ void app_init()
     	configASSERT(false);
     }
 
+    // Initialize SYS Active Object
+    if(!svc_sys_initialize(&ao_sys, "sys")) {
+    	printf("Error: Couldn't initialize sys AO\n");
+    	configASSERT(false);
+    }
     // Create button task
     ret = xTaskCreate(
             task_button,
