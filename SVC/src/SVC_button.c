@@ -34,10 +34,7 @@ typedef struct
 #define EVENT_BLOCKED_THRESHOLD_MIN_MS 8000
 
 /// | Private macro -------------------------------------------------------------
-
 /// | Private variables ---------------------------------------------------------
-extern ActiveObject ao_sys;
-
 /// | Private function prototypes -----------------------------------------------
 
 /// @brief Process the "button pressed" action, which happens whenever the Debouncer is at DEBOUNCER_STATE_WAIT_RELEASE state.
@@ -64,7 +61,7 @@ void task_button(void* parameters)
         .timer_up = 0,
     };
 
-    ButtonEvent current_event = EVENT_INITIAL;
+    ButtonEvent current_event = BUTTON_EVENT_INITIAL;
 
     printf("[%s] Task Created\n", pcTaskGetName(NULL));
 
@@ -129,13 +126,13 @@ static void process_button_pressed_state(ButtonEvent* const current_event, const
     const char* BUTTON_TASK_NAME = pcTaskGetName(NULL);
 
     if (timer_up >= EVENT_SHORT_THRESHOLD_MIN_MS && timer_up < EVENT_LONG_THRESHOLD_MIN_MS) {
-        new_event = EVENT_SHORT;
+        new_event = BUTTON_EVENT_SHORT;
     } else if (timer_up >= EVENT_LONG_THRESHOLD_MIN_MS && timer_up < EVENT_BLOCKED_THRESHOLD_MIN_MS) {
-        new_event = EVENT_LONG;
+        new_event = BUTTON_EVENT_LONG;
     } else if (timer_up >= EVENT_BLOCKED_THRESHOLD_MIN_MS) {
-        new_event = EVENT_BLOCKED;
+        new_event = BUTTON_EVENT_BLOCKED;
     } else {
-        new_event = EVENT_INITIAL;
+        new_event = BUTTON_EVENT_INITIAL;
     }
 
     // Since this function is being called periodically, we need to keep track of the new event and only send events
@@ -146,21 +143,21 @@ static void process_button_pressed_state(ButtonEvent* const current_event, const
         event_to_be_sent.opt_data_address = NULL;
 
         switch (*current_event) {
-        case EVENT_SHORT:
+        case BUTTON_EVENT_SHORT:
             printf("[%s] Detected SHORT press\n", BUTTON_TASK_NAME);
-            event_to_be_sent.id = (uint32_t)(EVENT_SHORT);
+            event_to_be_sent.id = (uint32_t)(BUTTON_EVENT_SHORT);
             ao_send_event(&ao_sys, &event_to_be_sent);
             break;
 
-        case EVENT_LONG:
+        case BUTTON_EVENT_LONG:
         	printf("[%s] Detected LONG press\n", BUTTON_TASK_NAME);
-            event_to_be_sent.id = (uint32_t)(EVENT_LONG);
+            event_to_be_sent.id = (uint32_t)(BUTTON_EVENT_LONG);
             ao_send_event(&ao_sys, &event_to_be_sent);
             break;
 
-        case EVENT_BLOCKED:
+        case BUTTON_EVENT_BLOCKED:
             printf("[%s] Detected BLOCKED press\n", BUTTON_TASK_NAME);
-            event_to_be_sent.id = (uint32_t)(EVENT_BLOCKED);
+            event_to_be_sent.id = (uint32_t)(BUTTON_EVENT_BLOCKED);
             ao_send_event(&ao_sys, &event_to_be_sent);
             break;
 
@@ -177,15 +174,15 @@ static void process_button_released_state(ButtonEvent* const current_event)
     printf("[%s] Button Released\n", pcTaskGetName(NULL));
 
     switch (*current_event) {
-    case EVENT_SHORT:
+    case BUTTON_EVENT_SHORT:
         break;
 
-    case EVENT_LONG:
+    case BUTTON_EVENT_LONG:
         break;
 
-    case EVENT_BLOCKED:
+    case BUTTON_EVENT_BLOCKED:
         // As per design, only turn off the LEDs when the current state is BLOCKED
-        event_to_be_sent.id = (uint32_t)(EVENT_RELEASED);
+        event_to_be_sent.id = (uint32_t)(BUTTON_EVENT_RELEASED);
         ao_send_event(&ao_sys, &event_to_be_sent);
         break;
 
