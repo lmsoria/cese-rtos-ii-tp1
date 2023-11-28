@@ -7,6 +7,8 @@
 #include "queue.h"
 #include "task.h"
 
+#include "event.h"
+
 //Problema 1
 //
 //Diseñar e implementar un módulo para las creación/inicializacion de objetos activos: creación de task y queue, inicializacion de estructura.
@@ -21,13 +23,6 @@
 //
 //bool InicializarObjetoActivo(objact_t*, void (*funcion_handle)(void), void*);
 
-typedef void (*dispatch_event_handler_t)(uint32_t, void*);
-
-typedef struct
-{
-	uint32_t id;
-	void* opt_data_address;
-} Event;
 
 typedef struct
 {
