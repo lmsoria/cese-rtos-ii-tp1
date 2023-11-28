@@ -6,6 +6,7 @@
 #include <task.h>
 
 #include "ao.h"
+#include "dyn_ao.h"
 
 #include "HAL_button.h"
 
@@ -20,7 +21,7 @@ typedef struct
 /// | Exported data -------------------------------------------------------------
 
 extern TaskHandle_t button_task_handle;
-extern ActiveObject ao_led;
+extern DynamicAO ao_led;
 extern ActiveObject ao_sys;
 
 /// | Exported constants --------------------------------------------------------

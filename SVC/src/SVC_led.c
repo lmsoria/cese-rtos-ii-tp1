@@ -20,9 +20,9 @@ static void svc_led_dispatch_event(uint32_t event_type, void* target_led);
 /// | Private functions ---------------------------------------------------------
 
 
-bool svc_led_initialize(ActiveObject* const ao, const char* ao_task_name)
+bool svc_led_initialize(DynamicAO* const ao, const char* ao_task_name)
 {
-	return ao_initialize(ao, ao_task_name, svc_led_dispatch_event);
+	return dynamic_ao_initialize(ao, ao_task_name, svc_led_dispatch_event);
 }
 
 static void svc_led_dispatch_event(uint32_t event_type, void* target_led)

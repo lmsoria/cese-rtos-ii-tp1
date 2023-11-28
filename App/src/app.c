@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "ao.h"
+#include "dyn_ao.h"
 
 #include "app.h"
 #include "app_resources.h"
@@ -26,8 +27,8 @@ static const ButtonTaskData BUTTON_TASK_DATA_ARRAY[1] =
 
 /// | Exported variables --------------------------------------------------------
 TaskHandle_t button_task_handle;
-ActiveObject ao_led;
 ActiveObject ao_sys;
+DynamicAO ao_led;
 
 
 /// | Private functions ---------------------------------------------------------
@@ -49,10 +50,11 @@ void app_init()
     	printf("Error: Couldn't initialize sys AO\n");
     	configASSERT(false);
     }
+
     // Create button task
     ret = xTaskCreate(
             task_button,
-            "Task Button",
+            "button",
             (2 * configMINIMAL_STACK_SIZE),
             (void*) &BUTTON_TASK_DATA_ARRAY[0],
             (tskIDLE_PRIORITY + 1UL),
