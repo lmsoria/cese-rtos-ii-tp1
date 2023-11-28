@@ -19,7 +19,7 @@ typedef enum
     LED_RED = LED3,   ///< Red LED
 } ApplicationLEDs;
 
-/// @brief Initialize the LED Active Object. By default This function will assign `task_led()` to the task field
+/// @brief Initialize the LED service, which will rely on a Dynamic Active Object
 /// @param ao Active Object to initialize
 /// @param ao_task_name Name for the task
 bool svc_led_initialize(DynamicAO* const ao, const char* ao_task_name);

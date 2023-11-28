@@ -9,32 +9,24 @@
 
 #include "event.h"
 
-//Problema 1
-//
-//Diseñar e implementar un módulo para las creación/inicializacion de objetos activos: creación de task y queue, inicializacion de estructura.
-//La idea sería contar con una función con en siguiente prototipo:
-//
-//bool InicializarObjetoActivo(objact_t*, void (*funcion_handle)(void));
-//
-//El primer argumento es la estructura del objeto activo que queremos Inicializar, en segundo el puntero a función del proceso que hará el objeto activo.
-//Retorna true so lo puede iniciar, false sino.
-
-//Con base en el problema anterior, se pide modificarlo para poder pasar argumentos a la función handle del objeto activo. El prototipo final podría ser de la siguiente forma.
-//
-//bool InicializarObjetoActivo(objact_t*, void (*funcion_handle)(void), void*);
-
-
+/// @brief Active Object struct, which consists of an event queue and a task that will process them.
 typedef struct
 {
-    QueueHandle_t queue;
-    TaskHandle_t* task;
-    dispatch_event_handler_t dispatch_function;
+    QueueHandle_t queue;                        ///< Event Queue.
+    TaskHandle_t* task;                         ///< Handle of the queue reception task
+    dispatch_event_handler_t dispatch_function; ///< Callback that will be triggered on each event reception.
 } ActiveObject;
 
+/// @brief Initialize an Active Object. This function will start the queue processing thread.
+/// @param ao Active Object to be initialized.
+/// @param task_name Name of the running threads.
+/// @param handler callback function used for processing incoming events.
+/// @return true if the Active Object was initialized successfully, false otherwise
 bool ao_initialize(ActiveObject* const ao, const char* task_name, dispatch_event_handler_t handler);
 
 
 /// @brief Post an Event to the Active Object's queue.
-/// @param ao Receiver of the event
-/// @param event Event to be sent
+/// @param ao Receiver of the event.
+/// @param event Event to be sent.
+/// @return true if the event was pushed into the queue, false otherwise.
 bool ao_send_event(ActiveObject* const ao, Event* const event);

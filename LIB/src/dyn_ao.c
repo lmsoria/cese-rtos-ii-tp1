@@ -1,7 +1,11 @@
+/// | Includes ------------------------------------------------------------------
 #include <stdio.h>
 #include <string.h>
 
 #include "dyn_ao.h"
+
+
+/// | Private define ------------------------------------------------------------
 
 #define DYNAMIC_AO_MAX_TASKS_COUNT 5
 #define DYNAMIC_AO_QUEUE_LENGTH 8
@@ -9,13 +13,22 @@
 #define DYNAMIC_AO_TASK_PRIORIY (tskIDLE_PRIORITY + 1UL)
 
 
+/// | Private macro -------------------------------------------------------------
+/// | Private variables ---------------------------------------------------------
+
+/// | Private function prototypes -----------------------------------------------
+
+static void dynamic_ao_delete_task(DynamicAO* const ao);
+static void ao_task(void* parameters);
+static bool dynamic_ao_create_task(DynamicAO* const ao);
+
+/// | Private functions ---------------------------------------------------------
 static void dynamic_ao_delete_task(DynamicAO* const ao)
 {
 	printf("[DYN AO] Deleting task \"%s\"\n", pcTaskGetName(NULL));
 	ao->task_count--;
 	vTaskDelete(NULL);
 }
-
 
 static void ao_task(void* parameters)
 {
@@ -59,7 +72,6 @@ static bool dynamic_ao_create_task(DynamicAO* const ao)
 	}
 
 }
-
 
 bool dynamic_ao_initialize(DynamicAO* const ao, const char* task_name, dispatch_event_handler_t handler)
 {
