@@ -1,7 +1,8 @@
 // ------ inclusions ---------------------------------------------------
 #include <stdio.h>
 
-#include "app_resources.h"
+#include "ao.h"
+#include "dyn_ao.h"
 
 #include "SVC_button.h"
 #include "SVC_led.h"
@@ -11,6 +12,13 @@
 /// | Private define ------------------------------------------------------------
 /// | Private macro -------------------------------------------------------------
 /// | Private variables ---------------------------------------------------------
+static ActiveObject ao_sys;
+
+/// | Exported variables --------------------------------------------------------
+ActiveObject* const AO_SYS = &ao_sys;
+
+extern DynamicAO ao_led;
+
 /// | Private function prototypes -----------------------------------------------
 
 /// @brief Process events received on the AO queue
@@ -19,9 +27,9 @@ static void svc_sys_dispatch_event(uint32_t event_type, void* unused);
 
 /// | Private functions ---------------------------------------------------------
 
-bool svc_sys_initialize(ActiveObject* const ao, const char* ao_task_name)
+bool svc_sys_initialize()
 {
-	return ao_initialize(ao, ao_task_name, svc_sys_dispatch_event);
+	return ao_initialize(AO_SYS, "sys", svc_sys_dispatch_event);
 }
 
 static void svc_sys_dispatch_event(uint32_t event_type, void* unused)

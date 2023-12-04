@@ -27,7 +27,6 @@ static const ButtonTaskData BUTTON_TASK_DATA_ARRAY[1] =
 
 /// | Exported variables --------------------------------------------------------
 TaskHandle_t button_task_handle;
-ActiveObject ao_sys;
 DynamicAO ao_led;
 
 
@@ -46,7 +45,7 @@ void app_init()
     }
 
     // Initialize SYS Active Object
-    if(!svc_sys_initialize(&ao_sys, "sys")) {
+    if(!svc_sys_initialize()) {
     	printf("Error: Couldn't initialize sys AO\n");
     	configASSERT(false);
     }

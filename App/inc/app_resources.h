@@ -19,11 +19,6 @@ typedef struct
 } ButtonTaskData;
 
 /// | Exported data -------------------------------------------------------------
-
-extern TaskHandle_t button_task_handle;
-extern DynamicAO ao_led;
-extern ActiveObject ao_sys;
-
 /// | Exported constants --------------------------------------------------------
 /// | Exported macro ------------------------------------------------------------
 /// | Exported functions --------------------------------------------------------

@@ -35,6 +35,7 @@ typedef struct
 
 /// | Private macro -------------------------------------------------------------
 /// | Private variables ---------------------------------------------------------
+extern ActiveObject* const AO_SYS;
 /// | Private function prototypes -----------------------------------------------
 
 /// @brief Process the "button pressed" action, which happens whenever the Debouncer is at DEBOUNCER_STATE_WAIT_RELEASE state.
@@ -146,19 +147,19 @@ static void process_button_pressed_state(ButtonEvent* const current_event, const
         case BUTTON_EVENT_SHORT:
             printf("[%s] Detected SHORT press\n", BUTTON_TASK_NAME);
             event_to_be_sent.id = (uint32_t)(BUTTON_EVENT_SHORT);
-            ao_send_event(&ao_sys, &event_to_be_sent);
+            ao_send_event(AO_SYS, &event_to_be_sent);
             break;
 
         case BUTTON_EVENT_LONG:
         	printf("[%s] Detected LONG press\n", BUTTON_TASK_NAME);
             event_to_be_sent.id = (uint32_t)(BUTTON_EVENT_LONG);
-            ao_send_event(&ao_sys, &event_to_be_sent);
+            ao_send_event(AO_SYS, &event_to_be_sent);
             break;
 
         case BUTTON_EVENT_BLOCKED:
             printf("[%s] Detected BLOCKED press\n", BUTTON_TASK_NAME);
             event_to_be_sent.id = (uint32_t)(BUTTON_EVENT_BLOCKED);
-            ao_send_event(&ao_sys, &event_to_be_sent);
+            ao_send_event(AO_SYS, &event_to_be_sent);
             break;
 
         default:
@@ -183,7 +184,7 @@ static void process_button_released_state(ButtonEvent* const current_event)
     case BUTTON_EVENT_BLOCKED:
         // As per design, only turn off the LEDs when the current state is BLOCKED
         event_to_be_sent.id = (uint32_t)(BUTTON_EVENT_RELEASED);
-        ao_send_event(&ao_sys, &event_to_be_sent);
+        ao_send_event(AO_SYS, &event_to_be_sent);
         break;
 
     default:
