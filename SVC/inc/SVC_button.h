@@ -10,4 +10,6 @@ typedef enum
 	BUTTON_EVENT_RELEASED,///< Detected when the button is being released.
 } ButtonEvent;
 
-void task_button(void* parameters);
+/// @brief Initialize the button service.
+/// @return true if the service was initialized successfully. False otherwise.
+bool svc_button_initialize();

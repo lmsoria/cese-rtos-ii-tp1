@@ -2,7 +2,8 @@
 #include <stdio.h>
 
 #include "ao.h"
-#include "app_resources.h"
+
+#include "HAL_button.h"
 #include "SVC_button.h"
 #include "SVC_sys.h"
 
@@ -38,6 +39,8 @@ typedef struct
 extern ActiveObject* const AO_SYS;
 /// | Private function prototypes -----------------------------------------------
 
+static void task_button(void* unused);
+
 /// @brief Process the "button pressed" action, which happens whenever the Debouncer is at DEBOUNCER_STATE_WAIT_RELEASE state.
 ///        Use this function to propagate events to other actors.
 /// @param current_event current ButtonEvent. The function will modify its content (iif it's different from the previous one).
@@ -50,13 +53,27 @@ static void process_button_pressed_state(ButtonEvent* const current_event, const
 static void process_button_released_state(ButtonEvent* const current_event);
 
 /// | Private functions ---------------------------------------------------------
-void task_button(void* parameters)
-{
-    ButtonTaskData* const DATA = (ButtonTaskData*) (parameters);
 
+bool svc_button_initialize()
+{
+	BaseType_t ret = pdFALSE;
+    // Create button task
+    ret = xTaskCreate(
+            task_button,
+            "button",
+            (2 * configMINIMAL_STACK_SIZE),
+            NULL,
+            (tskIDLE_PRIORITY + 1UL),
+            NULL);
+
+    return (ret == pdTRUE);
+}
+
+static void task_button(void* unused)
+{
     Debouncer debouncer =
     {
-        .button = DATA->button,
+        .button = USER_BUTTON,
         .state = DEBOUNCER_STATE_WAIT_PRESS,
         .timer_debounce = 0,
         .timer_up = 0,
