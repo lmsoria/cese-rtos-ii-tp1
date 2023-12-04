@@ -1,7 +1,7 @@
 // ------ inclusions ---------------------------------------------------
 #include <stdio.h>
 
-#include "app_resources.h"
+#include "dyn_ao.h"
 
 #include "HAL_led.h"
 #include "SVC_led.h"
@@ -10,19 +10,22 @@
 /// | Private define ------------------------------------------------------------
 /// | Private macro -------------------------------------------------------------
 /// | Private variables ---------------------------------------------------------
+static DynamicAO ao_led;
+
+/// | Exported variables --------------------------------------------------------
+DynamicAO* const AO_LED = &ao_led;
+
 /// | Private function prototypes -----------------------------------------------
 
 /// @brief Process events received on the AO queue
 /// @param event
 static void svc_led_dispatch_event(uint32_t event_type, void* target_led);
 
-
 /// | Private functions ---------------------------------------------------------
 
-
-bool svc_led_initialize(DynamicAO* const ao, const char* ao_task_name)
+bool svc_led_initialize()
 {
-	return dynamic_ao_initialize(ao, ao_task_name, svc_led_dispatch_event);
+	return dynamic_ao_initialize(AO_LED, "led", svc_led_dispatch_event);
 }
 
 static void svc_led_dispatch_event(uint32_t event_type, void* target_led)

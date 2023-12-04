@@ -17,7 +17,7 @@ static ActiveObject ao_sys;
 /// | Exported variables --------------------------------------------------------
 ActiveObject* const AO_SYS = &ao_sys;
 
-extern DynamicAO ao_led;
+extern DynamicAO* const AO_LED;
 
 /// | Private function prototypes -----------------------------------------------
 
@@ -44,29 +44,29 @@ static void svc_sys_dispatch_event(uint32_t event_type, void* unused)
 		printf("BUTTON_EVENT_SHORT\n");
 		event_to_be_sent.id = (uint32_t)(LED_EVENT_TOGGLE);
 		event_to_be_sent.opt_data_address = (void*)(LED_GREEN);
-		dynamic_ao_send_event(&ao_led, &event_to_be_sent);
+		dynamic_ao_send_event(AO_LED, &event_to_be_sent);
 		break;
 	case BUTTON_EVENT_LONG:
 		printf("BUTTON_EVENT_LONG\n");
 		event_to_be_sent.id = (uint32_t)(LED_EVENT_TOGGLE);
 		event_to_be_sent.opt_data_address = (void*)(LED_RED);
-		dynamic_ao_send_event(&ao_led, &event_to_be_sent);
+		dynamic_ao_send_event(AO_LED, &event_to_be_sent);
 		break;
 	case BUTTON_EVENT_BLOCKED:
 		printf("BUTTON_EVENT_BLOCKED\n");
 		event_to_be_sent.id = (uint32_t)(LED_EVENT_ON);
 		event_to_be_sent.opt_data_address = (void*)(LED_GREEN);
-		dynamic_ao_send_event(&ao_led, &event_to_be_sent);
+		dynamic_ao_send_event(AO_LED, &event_to_be_sent);
 		event_to_be_sent.opt_data_address = (void*)(LED_RED);
-		dynamic_ao_send_event(&ao_led, &event_to_be_sent);
+		dynamic_ao_send_event(AO_LED, &event_to_be_sent);
 		break;
 	case BUTTON_EVENT_RELEASED:
 		printf("BUTTON_EVENT_RELEASED\n");
 		event_to_be_sent.id = (uint32_t)(LED_EVENT_OFF);
 		event_to_be_sent.opt_data_address = (void*)(LED_GREEN);
-		dynamic_ao_send_event(&ao_led, &event_to_be_sent);
+		dynamic_ao_send_event(AO_LED, &event_to_be_sent);
 		event_to_be_sent.opt_data_address = (void*)(LED_RED);
-		dynamic_ao_send_event(&ao_led, &event_to_be_sent);
+		dynamic_ao_send_event(AO_LED, &event_to_be_sent);
 		break;
 	default:
 		configASSERT(pdFAIL && "Invalid event");

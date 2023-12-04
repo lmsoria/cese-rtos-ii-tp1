@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dyn_ao.h"
+#include <stdbool.h>
 
 #include "HAL_led.h"
 
@@ -20,6 +20,5 @@ typedef enum
 } ApplicationLEDs;
 
 /// @brief Initialize the LED service, which will rely on a Dynamic Active Object
-/// @param ao Active Object to initialize
-/// @param ao_task_name Name for the task
-bool svc_led_initialize(DynamicAO* const ao, const char* ao_task_name);
+/// @return true if the service was initialized successfully. False otherwise.
+bool svc_led_initialize();
