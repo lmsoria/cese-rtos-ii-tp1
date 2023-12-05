@@ -1,10 +1,10 @@
+/// | Includes ------------------------------------------------------------------
 #include <stdio.h>
-
 
 #include "app.h"
 
-#include "SVC_led.h"
 #include "SVC_button.h"
+#include "SVC_led.h"
 #include "SVC_sys.h"
 
 /// | Private typedef -----------------------------------------------------------

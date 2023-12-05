@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ao.h"
+#include <stdbool.h>
 
 /// @brief Initialize the SYS Active Object.
 /// @return true if the service was initialized successfully. False otherwise.

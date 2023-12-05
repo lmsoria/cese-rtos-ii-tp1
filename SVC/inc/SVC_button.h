@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 /// @brief Events to be detected by the button task
 typedef enum
 {

@@ -22,7 +22,6 @@ static void ao_task(void* parameters)
     }
 }
 
-
 bool ao_initialize(ActiveObject* const ao, const char* task_name, dispatch_event_handler_t handler)
 {
     BaseType_t ret;

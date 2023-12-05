@@ -28,18 +28,21 @@ typedef struct
 } Debouncer;
 
 /// | Private define ------------------------------------------------------------
-
 #define DEBOUNCE_PERIOD_MS 40
 #define EVENT_SHORT_THRESHOLD_MIN_MS 100
 #define EVENT_LONG_THRESHOLD_MIN_MS 2000
 #define EVENT_BLOCKED_THRESHOLD_MIN_MS 8000
 
 /// | Private macro -------------------------------------------------------------
+
 /// | Private variables ---------------------------------------------------------
 extern ActiveObject* const AO_SYS;
+
 /// | Private function prototypes -----------------------------------------------
 
-static void task_button(void* unused);
+/// @brief Button task. It will monitor the button every ms.
+/// @param unused
+static void button_task(void* unused);
 
 /// @brief Process the "button pressed" action, which happens whenever the Debouncer is at DEBOUNCER_STATE_WAIT_RELEASE state.
 ///        Use this function to propagate events to other actors.
@@ -59,7 +62,7 @@ bool svc_button_initialize()
 	BaseType_t ret = pdFALSE;
     // Create button task
     ret = xTaskCreate(
-            task_button,
+            button_task,
             "button",
             (2 * configMINIMAL_STACK_SIZE),
             NULL,
@@ -69,7 +72,7 @@ bool svc_button_initialize()
     return (ret == pdTRUE);
 }
 
-static void task_button(void* unused)
+static void button_task(void* unused)
 {
     Debouncer debouncer =
     {
