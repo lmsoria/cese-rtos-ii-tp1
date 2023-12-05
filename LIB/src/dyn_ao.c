@@ -40,7 +40,7 @@ static void ao_task(void* parameters)
     while(1) {
         if(xQueueReceive(AO->queue, &event, 0) == pdPASS) {
             if(AO->dispatch_function) {
-            	AO->dispatch_function(event.id, event.opt_data_address);
+            	AO->dispatch_function(&event);
             }
         } else {
         	dynamic_ao_delete_task(AO);

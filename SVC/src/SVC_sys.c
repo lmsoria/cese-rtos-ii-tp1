@@ -23,7 +23,7 @@ extern DynamicAO* const AO_LED;
 
 /// @brief Process events received on the AO queue
 /// @param event
-static void svc_sys_dispatch_event(uint32_t event_type, void* unused);
+static void svc_sys_dispatch_event(Event* event);
 
 /// | Private functions ---------------------------------------------------------
 
@@ -32,14 +32,13 @@ bool svc_sys_initialize()
 	return ao_initialize(AO_SYS, "sys", svc_sys_dispatch_event);
 }
 
-static void svc_sys_dispatch_event(uint32_t event_type, void* unused)
+static void svc_sys_dispatch_event(Event* event)
 {
     Event event_to_be_sent;
 
     printf("[%s] Event Received: ", pcTaskGetName(NULL));
 
-
-	switch ((ButtonEvent)(event_type)) {
+	switch ((ButtonEvent)(event->id)) {
 	case BUTTON_EVENT_SHORT:
 		printf("BUTTON_EVENT_SHORT\n");
 		event_to_be_sent.id = (uint32_t)(LED_EVENT_TOGGLE);

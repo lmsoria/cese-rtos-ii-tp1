@@ -19,7 +19,7 @@ DynamicAO* const AO_LED = &ao_led;
 
 /// @brief Process events received on the AO queue
 /// @param event
-static void svc_led_dispatch_event(uint32_t event_type, void* target_led);
+static void svc_led_dispatch_event(Event* event);
 
 /// | Private functions ---------------------------------------------------------
 
@@ -28,12 +28,12 @@ bool svc_led_initialize()
 	return dynamic_ao_initialize(AO_LED, "led", svc_led_dispatch_event);
 }
 
-static void svc_led_dispatch_event(uint32_t event_type, void* target_led)
+static void svc_led_dispatch_event(Event* event)
 {
     printf("[%s] Event Received: ", pcTaskGetName(NULL));
-    const ApplicationLEDs LED = (ApplicationLEDs)(target_led);
+    const ApplicationLEDs LED = (ApplicationLEDs)(event->opt_data_address);
 
-    switch ((LEDEventType)(event_type)) {
+    switch ((LEDEventType)(event->id)) {
     case LED_EVENT_ON:
         printf("LED_EVENT_ON\n");
         led_set(LED);
